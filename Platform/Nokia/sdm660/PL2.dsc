@@ -5,6 +5,7 @@
 #  Copyright (c) 2015 - 2016, Intel Corporation. All rights reserved.
 #  Copyright (c) 2018 - 2019, Bingxing Wang. All rights reserved.
 #  Copyright (c) 2022, Xilin Wu. All rights reserved.
+#  Copyright (c) 2026, PL2 port.
 #
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -12,49 +13,63 @@
 
 ################################################################################
 #
-# Defines Section - statements that will be processed to create a Makefile.
+# Defines Section
 #
 ################################################################################
-
 [Defines]
-  SOC_PLATFORM            = SDM660
-  USE_PHYSICAL_TIMER      = TRUE
+  SOC_PLATFORM             = SDM660
+  USE_PHYSICAL_TIMER       = TRUE
+  PLATFORM_NAME            = PL2
+  PLATFORM_GUID            = 8a4e5b2c-9f1d-4a3e-b7c8-1d2e3f4a5b6c
+  PLATFORM_VERSION         = 0.1
+  DSC_SPECIFICATION        = 0x0001001C
+  OUTPUT_DIRECTORY         = Build/PL2
+  SUPPORTED_ARCHITECTURES  = AARCH64
+  BUILD_TARGETS            = DEBUG|RELEASE
+  SKUID_IDENTIFIER         = DEFAULT
 
 !include Silicon/Qualcomm/QcomPkg/QcomCommonDsc.inc
 
+################################################################################
+#
+# PCD Section
+#
+################################################################################
 [PcdsFixedAtBuild.common]
-  gArmTokenSpaceGuid.PcdSystemMemoryBase|0x80000000         # Starting address
-  gArmTokenSpaceGuid.PcdSystemMemorySize|0xFDFA0000         # Limit to 4GB Size here
+  # Memory (3 GB variant)
+  gArmTokenSpaceGuid.PcdSystemMemoryBase|0x80000000
+  gArmTokenSpaceGuid.PcdSystemMemorySize|0xC0000000          # 3 GB
 
-  gArmTokenSpaceGuid.PcdCpuVectorBaseAddress|0x9ff8c000     # CPU Vectors
+  gArmTokenSpaceGuid.PcdCpuVectorBaseAddress|0x9FF8C000
   gArmTokenSpaceGuid.PcdArmArchTimerFreqInHz|19200000
   gArmTokenSpaceGuid.PcdArmArchTimerSecIntrNum|17
   gArmTokenSpaceGuid.PcdArmArchTimerIntrNum|18
-  gArmTokenSpaceGuid.PcdGicDistributorBase|0x17a00000
-  gArmTokenSpaceGuid.PcdGicRedistributorsBase|0x17b00000
+  gArmTokenSpaceGuid.PcdGicDistributorBase|0x17A00000
+  gArmTokenSpaceGuid.PcdGicRedistributorsBase|0x17B00000
 
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemRevision|0x00000850
-  gEmbeddedTokenSpaceGuid.PcdPrePiStackBase|0x9FF90000      # UEFI Stack
-  gEmbeddedTokenSpaceGuid.PcdPrePiStackSize|0x00040000      # 256K stack
+
+  gEmbeddedTokenSpaceGuid.PcdPrePiStackBase|0x9FF90000
+  gEmbeddedTokenSpaceGuid.PcdPrePiStackSize|0x00040000       # 256 KB
   gEmbeddedTokenSpaceGuid.PcdPrePiCpuIoSize|44
 
-  gQcomTokenSpaceGuid.PcdUefiMemPoolBase|0xA0000000         # DXE Heap base address
-  gQcomTokenSpaceGuid.PcdUefiMemPoolSize|0x2E000000         # UefiMemorySize, DXE heap size
-  gQcomTokenSpaceGuid.PcdMipiFrameBufferAddress|0x9d400000
+  gQcomTokenSpaceGuid.PcdUefiMemPoolBase|0xA0000000
+  gQcomTokenSpaceGuid.PcdUefiMemPoolSize|0x2E000000
+
+  # Framebuffer (confirmed standard address for this platform)
+  gQcomTokenSpaceGuid.PcdMipiFrameBufferAddress|0x9D400000
+  gQcomTokenSpaceGuid.PcdMipiFrameBufferWidth|1080
+  gQcomTokenSpaceGuid.PcdMipiFrameBufferHeight|1920
 
   gArmPlatformTokenSpaceGuid.PcdCoreCount|8
   gArmPlatformTokenSpaceGuid.PcdClusterCount|2
 
-  #
   # SimpleInit
-  #
   gSimpleInitTokenSpaceGuid.PcdDeviceTreeStore|0x83300000
   gSimpleInitTokenSpaceGuid.PcdLoggerdUseConsole|FALSE
 
 [LibraryClasses.common]
-  # Ported from SurfaceDuoPkg
   AslUpdateLib|Silicon/Qualcomm/QcomPkg/Library/DxeAslUpdateLib/DxeAslUpdateLib.inf
-
   PlatformMemoryMapLib|Silicon/Qualcomm/sdm660/Library/PlatformMemoryMapLib/PlatformMemoryMapLib.inf
   PlatformPeiLib|Silicon/Qualcomm/sdm660/Library/PlatformPeiLib/PlatformPeiLib.inf
   PlatformPrePiLib|Silicon/Qualcomm/sdm660/Library/PlatformPrePiLib/PlatformPrePiLib.inf
@@ -62,4 +77,3 @@
   SOCSmbiosInfoLib|Silicon/Qualcomm/sdm660/Library/SOCSmbiosInfoLib/SOCSmbiosInfoLib.inf
 
 [Components.common]
-  
