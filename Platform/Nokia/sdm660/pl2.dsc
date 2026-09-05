@@ -23,7 +23,7 @@
   SUPPORTED_ARCHITECTURES    = AARCH64
   BUILD_TARGETS              = DEBUG|RELEASE
   SKUID_IDENTIFIER           = DEFAULT
-  FLASH_DEFINITION           = Platform/Nokia/sdm660/PL2.fdf
+  FLASH_DEFINITION           = Platform/Nokia/sdm660/pl2.fdf
 
 !include Silicon/Qualcomm/QcomPkg/QcomCommonDsc.inc
 
